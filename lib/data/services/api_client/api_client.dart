@@ -1,59 +1,34 @@
-import 'package:avaliacao_2/api/api_config.dart';
-import 'package:avaliacao_2/exceptions/app_exception.dart';
 import 'package:avaliacao_2/utils/result.dart';
-import 'package:dio/dio.dart';
 
-/// Contrato de transporte HTTP independente de biblioteca (arquitetura §11.1).
-/// Implementação simplificada com Dio: `ApiClientImpl`.
-enum HttpMethod { get, post, put, patch, delete }
-
-enum ApiResponseType { json, text, bytes }
+enum HttpMethod { get, post, put, delete }
 
 typedef ApiResponseDecoder<T> = T Function(Object? data);
 
 final class ApiResponse<T> {
-  ApiResponse({
-    required this.data,
-    required this.statusCode,
-    required Map<String, String> headers,
-  }) : headers = Map.unmodifiable({
-         for (final entry in headers.entries)
-           entry.key.toLowerCase(): entry.value,
-       });
+  ApiResponse({required this.data, required this.statusCode});
 
   final T data;
   final int statusCode;
-  final Map<String, String> headers;
-
-  String? header(String name) => headers[name.toLowerCase()];
 }
 
 abstract interface class ApiClient {
   Future<Result<ApiResponse<T>>> request<T>({
     required String path,
     required HttpMethod method,
-    Map<String, Object> pathParameters = const {},
     Map<String, Object?> queryParameters = const {},
-    Map<String, String> headers = const {},
     Object? body,
-    bool authenticated = true,
-    ApiResponseType responseType = ApiResponseType.json,
     ApiResponseDecoder<T>? decoder,
   });
-
-  void close({bool force = false});
 }
 
 extension ApiClientVerbs on ApiClient {
   Future<Result<ApiResponse<T>>> get<T>(
     String path, {
-    Map<String, Object> pathParameters = const {},
     Map<String, Object?> queryParameters = const {},
     ApiResponseDecoder<T>? decoder,
   }) => request<T>(
     path: path,
     method: HttpMethod.get,
-    pathParameters: pathParameters,
     queryParameters: queryParameters,
     decoder: decoder,
   );
@@ -61,38 +36,27 @@ extension ApiClientVerbs on ApiClient {
   Future<Result<ApiResponse<T>>> post<T>(
     String path, {
     Object? body,
-    Map<String, Object> pathParameters = const {},
     ApiResponseDecoder<T>? decoder,
   }) => request<T>(
     path: path,
     method: HttpMethod.post,
-    pathParameters: pathParameters,
     body: body,
     decoder: decoder,
   );
 
-  Future<Result<ApiResponse<T>>> patch<T>(
+  Future<Result<ApiResponse<T>>> put<T>(
     String path, {
     Object? body,
-    Map<String, Object> pathParameters = const {},
     ApiResponseDecoder<T>? decoder,
   }) => request<T>(
     path: path,
-    method: HttpMethod.patch,
-    pathParameters: pathParameters,
+    method: HttpMethod.put,
     body: body,
     decoder: decoder,
   );
 
   Future<Result<ApiResponse<T>>> delete<T>(
     String path, {
-    Map<String, Object> pathParameters = const {},
     ApiResponseDecoder<T>? decoder,
-  }) => request<T>(
-    path: path,
-    method: HttpMethod.delete,
-    pathParameters: pathParameters,
-    decoder: decoder,
-  );
+  }) => request<T>(path: path, method: HttpMethod.delete, decoder: decoder);
 }
-
