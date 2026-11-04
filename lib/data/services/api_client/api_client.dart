@@ -1,8 +1,10 @@
-
+import 'package:avaliacao_2/api/api_config.dart';
+import 'package:avaliacao_2/exceptions/app_exception.dart';
 import 'package:avaliacao_2/utils/result.dart';
+import 'package:dio/dio.dart';
 
 /// Contrato de transporte HTTP independente de biblioteca (arquitetura §11.1).
-/// A implementação com Dio (`ApiClientImpl`) será criada junto com o backend.
+/// Implementação simplificada com Dio: `ApiClientImpl`.
 enum HttpMethod { get, post, put, patch, delete }
 
 enum ApiResponseType { json, text, bytes }
@@ -93,3 +95,4 @@ extension ApiClientVerbs on ApiClient {
     decoder: decoder,
   );
 }
+
