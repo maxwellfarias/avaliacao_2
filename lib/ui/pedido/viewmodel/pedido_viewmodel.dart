@@ -9,6 +9,7 @@ final class PedidoViewmodel extends ChangeNotifier{
   
   PedidoViewmodel({required this.pedidoRepository}){
     carregarPedidosCommand = Command0(_getPedidos);
+    deletarPedido = Command1(_deletarPedido);
   }
 
   late final Command0<List<PedidoModel>> carregarPedidosCommand;
