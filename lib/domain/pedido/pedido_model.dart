@@ -1,22 +1,41 @@
-final class ClienteModel {
+final class PedidoModel {
   final int id;
-  final String nome;
-  final String telefone;
-  final String endereco;
+  final int clienteId;
+  final String descricao;
+  final double valorTotal;
+  final String status;
+  final bool pago;
+  final String criadoEm;
 
-  ClienteModel({
+  PedidoModel({
     required this.id,
-    required this.nome,
-    required this.telefone,
-    required this.endereco,
+    required this.clienteId,
+    required this.descricao,
+    required this.valorTotal,
+    required this.status,
+    required this.pago,
+    required this.criadoEm,
   });
 
-  factory ClienteModel.fromMap(Map<String, dynamic> map) {
-    return ClienteModel(
+  factory PedidoModel.fromMap(Map<String, dynamic> map) {
+    return PedidoModel(
       id: map['id'],
-      nome: map['nome'],
-      telefone: map['telefone'],
-      endereco: map['endereco'],
+      clienteId: map['clienteId'],
+      descricao: map['descricao'],
+      valorTotal: (map['valorTotal'] as num).toDouble(),
+      status: map['status'],
+      pago: map['pago'],
+      criadoEm: map['criadoEm'],
     );
   }
+
+  /// Payload de POST/PUT (o `id` é gerado/definido pelo servidor/rota).
+  Map<String, dynamic> toMap() => {
+    'clienteId': clienteId,
+    'descricao': descricao,
+    'valorTotal': valorTotal,
+    'status': status,
+    'pago': pago,
+    'criadoEm': criadoEm,
+  };
 }
